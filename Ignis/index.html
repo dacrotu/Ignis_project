@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ignis Project</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+font-family:Segoe UI;
+background:linear-gradient(135deg,#020617,#0f172a,#1e293b);
+color:white;
+min-height:100vh;
+
+}
+
+/* HEADER */
+
+header{
+
+display:flex;
+align-items:center;
+gap:15px;
+padding:15px 30px;
+
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(10px);
+
+border-bottom:1px solid rgba(255,255,255,0.1);
+
+}
+
+.logo{
+
+width:60px;
+background:white;
+padding:6px;
+border-radius:16px;
+
+}
+
+header h1{
+
+font-size:22px;
+font-weight:600;
+
+}
+
+/* NAVIGATION */
+
+nav{
+
+display:flex;
+gap:10px;
+padding:15px 30px;
+
+}
+
+nav button{
+
+padding:10px 18px;
+border:none;
+
+border-radius:10px;
+
+background:rgba(255,255,255,0.08);
+
+color:white;
+
+cursor:pointer;
+
+transition:0.25s;
+
+}
+
+nav button:hover{
+
+background:rgba(255,255,255,0.18);
+
+transform:translateY(-2px);
+
+}
+
+/* TABS */
+
+.tab{
+
+display:none;
+padding:30px;
+animation:fade 0.4s;
+
+}
+
+.active{
+
+display:block;
+
+}
+
+@keyframes fade{
+
+from{opacity:0; transform:translateY(10px);}
+to{opacity:1; transform:translateY(0);}
+
+}
+
+/* CARDS */
+
+.card{
+
+background:rgba(255,255,255,0.05);
+
+border-radius:16px;
+
+padding:20px;
+
+margin-top:15px;
+
+backdrop-filter:blur(8px);
+
+border:1px solid rgba(255,255,255,0.1);
+
+}
+
+/* MAP */
+
+#map{
+
+height:500px;
+
+border-radius:15px;
+
+margin-top:15px;
+
+}
+
+/* FOOTER */
+
+footer{
+
+margin-top:40px;
+
+padding:20px;
+
+text-align:center;
+
+background:rgba(255,255,255,0.04);
+
+border-top:1px solid rgba(255,255,255,0.1);
+
+}
+
+a{
+
+color:#38bdf8;
+text-decoration:none;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<img src="Ignislogo.png" class="logo">
+
+<h1>Ignis Project</h1>
+
+</header>
+
+<nav>
+
+<button onclick="openTab('home')">Главная</button>
+<button onclick="openTab('maptab')">Карта опасных зон</button>
+<button onclick="openTab('status')">Статус системы</button>
+<button onclick="openTab('about')">Описание проекта</button>
+
+</nav>
+
+<!-- HOME -->
+
+<div id="home" class="tab active">
+
+<h2>Ignis Project</h2>
+
+<div class="card">
+
+<p>
+
+Ignis Project — это концепт интеллектуальной системы мониторинга
+пожароопасных зон на территории Казахстана.
+
+</p>
+
+<p>
+
+Проект предполагает использование датчиков температуры,
+уровня дыма и погодных данных для обнаружения
+потенциальных возгораний на ранней стадии.
+
+</p>
+
+<p>
+
+Собранная информация отображается на интерактивной карте,
+что позволяет быстро реагировать на угрозы и предотвращать
+масштабные пожары в степях, лесах и природных зонах.
+
+</p>
+
+</div>
+
+</div>
+
+<!-- MAP -->
+
+<div id="maptab" class="tab">
+
+<h2>Карта потенциально опасных зон</h2>
+
+<div id="map"></div>
+
+</div>
+
+<!-- STATUS -->
+
+<div id="status" class="tab">
+
+<h2>Статус системы</h2>
+
+<div class="card">
+
+Уровень дыма: <b id="smoke">10 µg/m³</b>
+
+</div>
+
+<div class="card">
+
+Температура: <b id="temp">26°C</b>
+
+</div>
+
+<div class="card">
+
+Статус датчиков: <b>Активны</b>
+
+</div>
+
+</div>
+
+<!-- ABOUT -->
+
+<div id="about" class="tab">
+
+<h2>Описание проекта</h2>
+
+<div class="card">
+
+<p>
+
+Ignis Project — это цифровая система мониторинга,
+которая объединяет данные датчиков,
+географических карт и экологических показателей.
+
+</p>
+
+<p>
+
+Алгоритмы анализируют уровень дыма,
+температуру окружающей среды
+и погодные условия.
+
+</p>
+
+<p>
+
+Если показатели превышают безопасный уровень,
+система отмечает территорию как потенциально опасную
+и может отправлять предупреждение службам мониторинга.
+
+</p>
+
+</div>
+
+</div>
+
+<footer>
+
+Instagram проекта:
+
+<a href="https://www.instagram.com/ignis_project.kz?igsh=MWVidTlnaGRndnFldA==" target="_blank">
+
+@ignis_project.kz
+
+</a>
+
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+
+function openTab(tab){
+
+document.querySelectorAll(".tab").forEach(t=>{
+t.classList.remove("active")
+})
+
+document.getElementById(tab).classList.add("active")
+
+if(tab==="maptab"){
+setTimeout(initMap,200)
+}
+
+}
+
+let mapLoaded=false
+
+function initMap(){
+
+if(mapLoaded)return
+
+let map=L.map('map').setView([48.0196,66.9237],5)
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+maxZoom:18
+}).addTo(map)
+
+let zones=[
+
+[43.222,76.851],
+[51.169,71.449],
+[49.802,73.087]
+
+]
+
+zones.forEach(z=>{
+
+L.circle(z,{
+color:'red',
+radius:50000
+}).addTo(map)
+
+})
+
+mapLoaded=true
+
+}
+
+setInterval(()=>{
+
+document.getElementById("smoke").innerText=
+(Math.random()*40).toFixed(1)+" µg/m³"
+
+document.getElementById("temp").innerText=
+(20+Math.random()*15).toFixed(1)+"°C"
+
+},4000)
+
+</script>
+
+</body>
+</html>
